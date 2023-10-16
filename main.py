@@ -1,0 +1,1 @@
+print("Fucking Kill Me Already")
