@@ -1,4 +1,5 @@
 /venv
+/Quoridoor
 
 pyvenv.cfg
 *.md
