@@ -129,6 +129,7 @@ def train_step():
 
     # To stabilize the training a possible trick is to "blend" between two networks to make a so-called soft update
     # the first Agent AI is trained, the second, Target Agent AI is used to estimate the Q values
+    
     agent_dict=agent_ai.state_dict()
     target_dict=target_agent_ai.state_dict()
     for k in agent_dict.keys():
