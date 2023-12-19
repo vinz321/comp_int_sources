@@ -1,3 +1,4 @@
+import random
 import numpy as np
 from enum import Enum
 RIGHT=0
@@ -7,33 +8,36 @@ DOWN=3
 
 class Snake():
     def __init__(self, screen_size, table: np.ndarray):
-        self.len=2
+        self.len=1
         self.dir=RIGHT
-        self.pos=np.array([screen_size[0]//2, screen_size[1]//2])
-        self.body=[self.pos,self.pos+[0,-1]]
-        print(self.body)
-
-        table[self.body[0][0],self.body[0][1]]=1
-        table[self.body[1][0],self.body[1][1]]=1
-        print(table[screen_size[0]//2, screen_size[1]//2])
+        self.pos=np.array([random.randint(1,screen_size[0]-2), random.randint(1,screen_size[1]-2)])
+        self.body=[self.pos]
+        table[1,self.body[0][0],self.body[0][1]]=2
 
         
     
     def write_body(self, new_pos, table:np.ndarray):
-        self.body.insert(0, new_pos)
-        
-        if table[new_pos[0],new_pos[1]]==1:
+        if table[0,new_pos[0],new_pos[1]]==1:
             return 0
-        if table[new_pos[0],new_pos[1]]==2:
+        
+        self.body.insert(0, new_pos)
 
-            table[new_pos[0],new_pos[1]]=1
+        if table[2,new_pos[0],new_pos[1]]==3:
+            table[1,new_pos[0],new_pos[1]]=2
+            table[0,self.body[1][0], self.body[1][1]]=1
+            table[1,self.body[1][0], self.body[1][1]]=0
             self.pos=new_pos
             self.len+=1
             return 2
         else:
             clear=self.body.pop()
-            table[clear[0],clear[1]]=0
-            table[new_pos[0],new_pos[1]]=1
+            table[0,clear[0],clear[1]]=0
+
+            table[1,new_pos[0],new_pos[1]]=2
+
+            if self.len>1:
+                table[0,self.body[1][0], self.body[1][1]]=1
+                table[1,self.body[1][0], self.body[1][1]]=0
             self.pos=new_pos
             return 1
     
@@ -51,7 +55,6 @@ class Snake():
             out=self.write_body(self.pos+[0,1],table)
         elif self.dir==DOWN:
             out=self.write_body(self.pos+[1,0],table)
-
-        if not out:
-            print("Lost")
+        else:
+            raise ValueError("Out of range direction")
         return out
