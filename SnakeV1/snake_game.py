@@ -23,6 +23,7 @@ UP:int=1
 LEFT:int=2
 DOWN:int=3
 
+
 class Snake():
     def __init__(self, start_pos):
         self.body=[start_pos]
@@ -53,6 +54,8 @@ class Snake():
         return self.body[0]
     def __len__(self):
         return len(self.body)
+    
+
     
 class Ground():
     def __init__(self, eat_reward=1, survival_reward=0, lose_reward=-1):
@@ -91,13 +94,13 @@ class Ground():
                     head_collisions+=[int(self.is_wall(self.snake.pos[0]+row, self.snake.pos[1]+col))]
         return head_collisions
 
+
     def get_relative_apple_position(self):
         return np.array(self.apple)-np.array(self.snake.pos)
 
         
     
     def reset(self):
-
         self.snake=Snake([random.randint(1,SCREEN_SIZE[0]-2),
                             random.randint(1,SCREEN_SIZE[1]-2)])
         self.apple=[random.randint(1,SCREEN_SIZE[0]-2),
@@ -135,9 +138,7 @@ class Ground():
         if action!=None:
             self.snake.setdir(action)
         self.snake.move()
-
         r=self.update_screen(False)
-
         return r,self.screen 
 
     def place_apple(self,x,y):
@@ -146,6 +147,7 @@ class Ground():
         self.screen[1,x,y]=1
     def place_snake_body(self,x,y):
         self.screen[0,x,y]=1
+
 
 def action_to_str(action):
     if action==0:
@@ -174,38 +176,23 @@ state=make_state(ground.get_snake_neighbour(), ground.snake.direction, ground.ge
 
 training=True
 
-duration=[]
-
-action_buffer=deque(maxlen=4)
 for t in count():
     
     for d in count():
         plt.figure(1)
         plt.clf()
         plt.imshow(deepcopy(ground.screen).transpose(1,2,0))
-        plt.pause(0.01)
-        # training=False
-        sleep(.01)
+        plt.pause(0.005)
+        sleep(.005)
 
-        # print(state.tolist())
 
         action=smart_snake.select_action(state,training).view(1,1)
-
         reward, next_state=ground.step(action)
         game_over=reward==ground.lose_reward
         reward=torch.tensor(reward, device=torch.device('cuda'), dtype=torch.float).view(1,1)
-
         next_state=make_state(ground.get_snake_neighbour(), ground.snake.direction, ground.get_relative_apple_position(), type=torch.float).unsqueeze(0)
-        # next_state=torch.tensor(next_state, device=torch.device('cuda'), dtype=torch.float).unsqueeze(0)
-        
-        #print(f"{action_to_str(action.item())}, {reward.item()}")  
-        print(len(ground.snake), " ", d," ", 100*len(ground.snake))
 
-        # if not action_buffer or action in action_buffer and action.item()!=2:
-        #     action_buffer.append(action)
-        # else:
-        #     action_buffer.clear() 
-
+        # Add a penalty if it survives too long because probably it got stuck in some sort of loop
         if d>70*len(ground.snake):
             reward=torch.tensor(-30, device=torch.device('cuda'), dtype=torch.float).view(1,1)
 
@@ -221,10 +208,8 @@ for t in count():
                                     action, 
                                     reward, 
                                     None)
-            duration+=[d]
             break
         smart_snake.train_step()
-
         state=next_state.clone()
         
     
