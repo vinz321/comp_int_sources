@@ -11,4 +11,6 @@ $$R_t + \gamma \max_a Q(s_{t+1},a)$$
 
 The snake is rewarded more when it eats an apple, and is penalized when it hits a wall or itself or if it survives too long with the same length (it basically starves) to avoid it circling around infinitely.
 
+_by Vincenzo Micciche'_
+
 
