@@ -198,8 +198,7 @@ class ReinforcedPlayer(Player):
 
             Q_sa=batch_reward.clone()
             with torch.no_grad():
-                print(~batch_is_final)
-                Q_sa[~(batch_is_final.numpy())]+=(self.target_agent(batch_next_state).max(1).values.unsqueeze(1))[~(batch_is_final.numpy())]
+                Q_sa[~(batch_is_final.numpy())]+=(self.target_agent(batch_next_state).max(1).values.unsqueeze(1))[~(batch_is_final.numpy())]*self.discount
             pred=self.agent(batch_state).gather(1, batch_action)
 
             loss=criterion(pred, Q_sa)

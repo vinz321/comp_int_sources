@@ -94,7 +94,7 @@ def loss_v1(game:Game, symbol=0)-> int: #max symbols on a line/diagonal
 
     count=np.count_nonzero(b[second_diag[:,0], second_diag[:,1]]==symbol)
 
-    if (1-symbol)not in b[second_diag[:,0],second_diag[:,1]] and count>max:
+    if (1-symbol) not in b[second_diag[:,0],second_diag[:,1]] and count>max:
         max=count
     
     return max
@@ -217,13 +217,14 @@ class MiniPlayer(Player): #minimax with alpha-beta (TODO)
 
 class MontecarloPlayer(Player): #https://towardsdatascience.com/monte-carlo-tree-search-an-introduction-503d8c04e168 this helped me understand thus the code may be very similar
     
-    def __init__(self, n_plays, iterations):
+    def __init__(self, player_id, n_plays, iterations):
         self.iterations=iterations
         self.n_plays=n_plays
+        self.player_id=player_id
 
     def make_move(self,game:Game) -> tuple[tuple[int,int], Move]:
         
-        self.root_node=MontecarloNode(deepcopy(game),None, None)
+        self.root_node=MontecarloNode(deepcopy(game),None, None, turn=self.player_id)
         wins,simulations=self.root_node.rollout(self.n_plays)
         self.root_node.backpropagate(wins, simulations)
       
@@ -269,6 +270,7 @@ class MontecarloNode():
             return self.move
         else:
             return self.parent.get_move_backtrack(root_node)
+        
     def get_value(self):
         if self.n==0:
             return 0

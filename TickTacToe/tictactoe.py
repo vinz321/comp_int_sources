@@ -164,10 +164,10 @@ class Agent1():
                 self.state_frequency[taken_sets]=[0 for _ in range(9)]
             
             # It kinda works, but not enough 
-            #self.lookup[taken_sets][action] *= self.state_frequency[taken_sets][action]
+            # self.lookup[taken_sets][action] *= self.state_frequency[taken_sets][action]
             self.lookup[taken_sets][action] += cumulative_reward
-            self.state_frequency[taken_sets][action] +=1
-            #self.lookup[taken_sets][action] /= self.state_frequency[taken_sets][action]
+            self.state_frequency[taken_sets][action] += 1
+            # self.lookup[taken_sets][action] /= self.state_frequency[taken_sets][action]
             
             # self.lookup[taken_sets][action] *= (1-BLEND_FACTOR)
             # self.lookup[taken_sets][action] += cumulative_reward*BLEND_FACTOR

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     g.print()
     #player1 = RandomPlayer()
     #player1 = vinz_player.VinzPlayer(0)
-    #player1=vinz_player.MontecarloPlayer(5,100)
+    #player1=vinz_player.MontecarloPlayer(0,5,100)
 
     #player1=A2c.BigBrainPlayer(0,.8)
     player1=reinforced_player.ReinforcedPlayer(0)
